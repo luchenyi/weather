@@ -91,24 +91,27 @@
     <ul class="ulct">
         <li>
         <h4 class="fontColor data">今天</h4>
-        <img src="images/多云.jpg" alt="天气图片">
+        <img src="images/duoyun.png" class="photo" alt="天气图片">
         <h2 class="fontColor cel">37 ~ 29℃</h2>
         <h4 class="fontColor weather">多云转阴</h4>
         <p class="week">周四 07月13日 (实时：36℃)</p>
+          <h4 class="wind">东南风</h4>
         </li>
         <li>
         <h4 class="fontColor data">明天</h4>
-        <img src="images/阴天.jpg" alt="天气图片">
+        <img src="images/duoyun.png" class="photo" alt="天气图片">
         <h2 class="fontColor cel">37 ~ 29℃</h2>
         <h4 class="fontColor weather">阴</h4>
         <p class="week">周五</p>
+        <h4 class="wind">东南风</h4>
         </li>
         <li>
         <h4 class="fontColor data">后天</h4>
-        <img src="images/阴天.jpg" alt="天气图片">
+        <img src="images/duoyun.png" class="photo" alt="天气图片">
         <h2 class="fontColor cel">36 ~ 29℃</h2>
         <h4 class="fontColor weather">阴转多云</h4>
         <p class="week">周六</p>
+        <h4 class="wind">东南风</h4>
         </li>
     </ul>
     <input type="text" class="ipt btn" placeholder="请输入城市">
@@ -118,14 +121,15 @@
 
 
 <script>
-    var $city=$(".city");
-    var $ulct=$(".ulct")
-    var $cel=$(".cel");
+var $city=$(".city");
+var $ulct=$(".ulct");
+var $cel=$(".cel");
     $("a.btn").on("click",function () {
         var value=$(".ipt").val();
+      console.log($(".ipt").val());
         if(!value){
-            alert("请输入城市")
-            return
+            alert("请输入城市");
+            return;
         }
         $(this).data("lockajax","true");
         if($(this).data("lockajax")){
@@ -136,18 +140,28 @@
                 dataType:'jsonp',
                 jsonp:'callback',
                 jsonpCallback:'getCity'
-            })
-        }
-    })
+            });
+        }else 
+        {
+        
+          return;
+              }
+    });
 function getCity(res){
     $city.html(res.results[0].currentCity);
     var temArray=res.results[0].weather_data; //接受天气数据的数组
+    
     console.log(temArray);
     $(".ulct li img").each(function(index){
-            $(this).siblings(".cel").html(temArray[index].temperature); //获取温度
-            $(this).siblings(".weather").html(temArray[index].weather); //获取气候
-            $(this).siblings(".week").html(temArray[index].date);   //获取星期
-    })
+    var url=temArray[index].dayPictureUrl;
+      console.log(url);
+    $('.photo').eq(index).attr('src', url); //替换天气 
+    $('.cel').eq(index).html(temArray[index].temperature); //获取温度
+    $(this).siblings(".weather").html(temArray[index].weather); //获取气候
+    $(this).siblings(".week").html(temArray[index].date);   //获取星期
+     
+    $(this).siblings(".wind").html(temArray[index].wind); //获取风向及风力
+    });
 }
 </script>
 </body>
